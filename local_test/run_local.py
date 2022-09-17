@@ -133,23 +133,18 @@ def load_and_test_algo():
     # save predictions
     predictions.to_csv(os.path.join(testing_outputs_path, "test_predictions.csv"), index=False)
     # score the results
-    results = score(test_data, predictions)  
+    # test_key
+    test_key = pd.read_csv(f"{local_datapath}/{dataset_name}/{dataset_name}_test_key.csv")
+    results = score(test_key, predictions, data_schema)  
     print("done with predictions")
     return results
 
 
-def set_id_and_target_cols(dataset_name):
-    global id_col, target_col, test_key
-    data_schema = utils.get_data_schema(data_schema_path)
-    # set the id attribute
-    id_col = data_schema["inputDatasets"]["recommenderBaseMainInput"]["idField"]       
-    # set the target attribute
+def score(test_key, predictions, data_schema):    
+    id_col = data_schema["inputDatasets"]["recommenderBaseMainInput"]["idField"]    
     target_col = data_schema["inputDatasets"]["recommenderBaseMainInput"]["targetField"]   
-    # test_key
-    test_key = pd.read_csv(f"{local_datapath}/{dataset_name}/{dataset_name}_test_key.csv")
-
-
-def score(test_data, predictions):
+    
+    
     predictions = predictions.merge(test_key[[id_col, target_col]], on=id_col)
     rmse = mean_squared_error(predictions[target_col], predictions['prediction'], squared=False)
     mae = mean_absolute_error(predictions[target_col], predictions['prediction'])
@@ -168,7 +163,7 @@ def score(test_data, predictions):
         "mae": np.round(mae,4),
         "nmae": np.round(nmae,4),
         "r2": np.round(r2,4),
-        "perc_pred_missing": np.round( 100 * (1 - predictions.shape[0] / test_data.shape[0]), 2)
+        "perc_pred_missing": np.round( 100 * (1 - predictions.shape[0] / test_key.shape[0]), 2)
         }
     return scores
 
@@ -200,7 +195,6 @@ def run_train_and_test(dataset_name, run_hpt, num_hpt_trials):
     if run_hpt: run_HPT(num_hpt_trials)               # run HPT and save tuned hyperparameters
     train_and_save_algo()        # train the model and save
     
-    set_id_and_target_cols(dataset_name=dataset_name)
     results = load_and_test_algo()        # load the trained model and get predictions on test data
     
     end = time.time()
@@ -224,7 +218,7 @@ if __name__ == "__main__":
     run_hpt_list = [False]
     
     datasets = ["amazon_electronics_small", "anime", "book_crossing_small", "jester", "modcloth", "movielens_1m", "movielens_10m"]
-    # datasets = ["book_crossing_small"]
+    datasets = ["movielens_1m"]
     
     for run_hpt in run_hpt_list:
         all_results = []
