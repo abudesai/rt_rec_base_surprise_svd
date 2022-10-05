@@ -68,17 +68,27 @@ class Recommender:
         self.model.qi = self.model.qi.base
         self.model.bu = self.model.bu.base
         self.model.bi = self.model.bi.base
-        surprise.dump.dump(os.path.join(model_path, "model.save"), predictions=None, algo=self.model, verbose=1)
+        # surprise.dump.dump(os.path.join(model_path, "model.save"), predictions=None, algo=self.model, verbose=1)
+        
+        joblib.dump(self.model, os.path.join(model_path, "model.save"))
+        
+        
         np.save(os.path.join(model_path, "lower_bound.npy"), self.mi)
         np.save(os.path.join(model_path, "upper_bound.npy"), self.ma)
+        # sys.exit()
 
     @classmethod
     def load(ml, model_path):
         model_params = joblib.load(os.path.join(model_path, model_params_fname))
         mf = ml(**model_params)
+        
         mf.mi = int(np.load(os.path.join(model_path, "lower_bound.npy")))
-        mf.ma = int(np.load(os.path.join(model_path, "upper_bound.npy")))
-        mf.model = surprise.dump.load(os.path.join(model_path, "model.save"))[1]
+        mf.ma = int(np.load(os.path.join(model_path, "upper_bound.npy")))        
+        
+        # mf.model = surprise.dump.load(os.path.join(model_path, "model.save"))[1]
+        
+        mf.model = joblib.load(os.path.join(model_path, "model.save"))        
+        
         return mf
 
 
@@ -97,10 +107,6 @@ def save_model(model, model_path):
 
 
 def load_model(model_path):
-    try:
-        model = Recommender.load(model_path)
-    except:
-        raise Exception(f'''Error loading the trained {MODEL_NAME} model. 
-            Do you have the right trained model in path: {model_path}?''')
+    model = Recommender.load(model_path)
     return model
 
