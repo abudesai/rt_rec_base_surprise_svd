@@ -70,7 +70,7 @@ class Recommender:
         self.model.bi = self.model.bi.base
         # surprise.dump.dump(os.path.join(model_path, "model.save"), predictions=None, algo=self.model, verbose=1)
         
-        joblib.dump(self.model, os.path.join(model_path, "model.save"))
+        joblib.dump(self.model, os.path.join(model_path, "model.save"), protocol=2)
         
         
         np.save(os.path.join(model_path, "lower_bound.npy"), self.mi)
