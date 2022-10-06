@@ -68,10 +68,9 @@ class Recommender:
         self.model.qi = self.model.qi.base
         self.model.bu = self.model.bu.base
         self.model.bi = self.model.bi.base
-        # surprise.dump.dump(os.path.join(model_path, "model.save"), predictions=None, algo=self.model, verbose=1)
         
-        joblib.dump(self.model, os.path.join(model_path, "model.save"), protocol=2)
-        
+        surprise.dump.dump(os.path.join(model_path, "model.save"), predictions=None, algo=self.model, verbose=1)        
+        # joblib.dump(self.model, os.path.join(model_path, "model.save"), protocol=2)        
         
         np.save(os.path.join(model_path, "lower_bound.npy"), self.mi)
         np.save(os.path.join(model_path, "upper_bound.npy"), self.ma)
@@ -85,9 +84,8 @@ class Recommender:
         mf.mi = int(np.load(os.path.join(model_path, "lower_bound.npy")))
         mf.ma = int(np.load(os.path.join(model_path, "upper_bound.npy")))        
         
-        # mf.model = surprise.dump.load(os.path.join(model_path, "model.save"))[1]
-        
-        mf.model = joblib.load(os.path.join(model_path, "model.save"))        
+        mf.model = surprise.dump.load(os.path.join(model_path, "model.save"))[1]        
+        # mf.model = joblib.load(os.path.join(model_path, "model.save"))        
         
         return mf
 
