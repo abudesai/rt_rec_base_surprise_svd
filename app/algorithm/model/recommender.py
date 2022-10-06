@@ -93,12 +93,6 @@ class Recommender:
 
 
 def get_data_based_model_params(X):
-    """
-    returns a dictionary with N: number of users and M = number of items
-    This assumes that the given numpy array (X) has users by id in first column,
-    and items by id in 2nd column.
-    The ids must be contiguous i.e. 0 to N-1 and 0 to M-1 for users and items.
-    """
     return {}
 
 

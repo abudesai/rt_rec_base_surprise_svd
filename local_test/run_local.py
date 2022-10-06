@@ -194,7 +194,6 @@ def run_train_and_test(dataset_name, run_hpt, num_hpt_trials):
     copy_example_files(dataset_name)   # copy the required files for model training    
     if run_hpt: run_HPT(num_hpt_trials)               # run HPT and save tuned hyperparameters
     train_and_save_algo()        # train the model and save
-    
     results = load_and_test_algo()        # load the trained model and get predictions on test data
     
     end = time.time()
@@ -218,7 +217,7 @@ if __name__ == "__main__":
     run_hpt_list = [False]
     
     datasets = ["amazon_electronics_small", "anime", "book_crossing_small", "jester", "modcloth", "movielens_1m", "movielens_10m"]
-    datasets = ["modcloth"]
+    datasets = ["anime"]
     
     for run_hpt in run_hpt_list:
         all_results = []

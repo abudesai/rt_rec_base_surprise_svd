@@ -59,15 +59,9 @@ def get_preprocess_pipeline(pp_params, model_cfg):
 
 
 
-
 def save_preprocessor(preprocess_pipe, file_path):
     file_path_and_name = os.path.join(file_path, PREPROCESSOR_FNAME)
-    try: 
-        joblib.dump(preprocess_pipe, file_path_and_name)   
-    except: 
-        raise Exception(f'''
-            Error saving the preprocessor. 
-            Does the file path exist {file_path}?''')  
+    joblib.dump(preprocess_pipe, file_path_and_name)   
     return    
     
 
@@ -75,21 +69,13 @@ def load_preprocessor(file_path):
     file_path_and_name = os.path.join(file_path, PREPROCESSOR_FNAME)
     if not os.path.exists(file_path_and_name):
         raise Exception(f'''Error: No trained preprocessor found. 
-        Expected to find model files in path: {file_path_and_name}''')
-        
-    try: 
-        preprocess_pipe = joblib.load(file_path_and_name)     
-    except: 
-        raise Exception(f'''
-            Error loading the preprocessor. 
-            Do you have the right trained preprocessor at {file_path_and_name}?''')
-    
+        Expected to find model files in path: {file_path_and_name}''')        
+    preprocess_pipe = joblib.load(file_path_and_name)         
     return preprocess_pipe 
 
 
 
 def get_inverse_transform_on_preds(pipeline, model_cfg, preds):
-    #
     pp_step_names = model_cfg["pp_params"]["pp_step_names"]
     scaler = pipeline[pp_step_names['TARGET_SCALER']]
     preds = scaler.inverse_transform(preds)

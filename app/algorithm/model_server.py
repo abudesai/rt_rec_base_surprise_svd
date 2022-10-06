@@ -16,21 +16,13 @@ class ModelServer:
         
     
     def _get_preprocessor(self): 
-        try: 
-            self.preprocessor = pipeline.load_preprocessor(self.model_path)
-            return self.preprocessor
-        except: 
-            print(f'No preprocessor found to load from {self.model_path}. Did you train the model first?')
-        return None
+        self.preprocessor = pipeline.load_preprocessor(self.model_path)
+        return self.preprocessor
 
     def _get_model(self):
         # if self.model is None:
-        try:
-            self.model = recommender.load_model(self.model_path)
-            return self.model
-        except:
-            print(f'Could not load model from {self.model_path}. Did you train the model first?')
-            return None
+        self.model = recommender.load_model(self.model_path)
+        return self.model
 
         
     
